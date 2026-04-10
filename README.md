@@ -1,6 +1,6 @@
 Top 100 Movies Reviewer
 
-A UI that helps the user enter their review of the top 100 movies of all time. A user can filter based on genre, user reviews, and movies reviewed. They can edit their reviews and also delete them based of review ID.
+A UI that helps the user enter their review of the top 100 movies of all time. A user can filter based on genre, user reviews, and movies reviewed. They can edit their reviews and also delete them based off review ID.
 
 Pages
 
