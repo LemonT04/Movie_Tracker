@@ -28,7 +28,7 @@ def init_db():
     """Initialize database tables if they don't exist."""
     with get_cursor() as cur:
         cur.execute("""
-            CREATE TABLE IF NOT EXISTS Movie (
+            CREATE TABLE IF NOT EXISTS Top_100_Movies (
                 Movie_ID SERIAL PRIMARY KEY,
                 Title VARCHAR(100) NOT NULL,
                 IMDB VARCHAR(20) NOT NULL,
@@ -40,9 +40,9 @@ def init_db():
         """)
 
         cur.execute("""
-            CREATE TABLE IF NOT EXISTS Info (
+            CREATE TABLE IF NOT EXISTS Movie_Info (
                 Info_ID SERIAL PRIMARY KEY,
-                Movie_ID INTEGER NOT NULL REFERENCES Movie(Movie_ID) ON DELETE CASCADE,
+                Movie_ID INTEGER NOT NULL REFERENCES Top_100_Movies(Movie_ID) ON DELETE CASCADE,
                 Director VARCHAR(100) NOT NULL,
                 Actor1 VARCHAR(100) NOT NULL,
                 Actor2 VARCHAR(100) NOT NULL,
@@ -52,9 +52,9 @@ def init_db():
         """)
 
         cur.execute("""
-            CREATE TABLE IF NOT EXISTS Users (
+            CREATE TABLE IF NOT EXISTS User_Info (
                 User_ID SERIAL PRIMARY KEY,
-                Movie_ID INTEGER NOT NULL REFERENCES Movie(Movie_ID) ON DELETE CASCADE,
+                Movie_ID INTEGER NOT NULL REFERENCES Top_100_Movies(Movie_ID) ON DELETE CASCADE,
                 Name VARCHAR(100) NOT NULL,
                 Review VARCHAR(100) NOT NULL,
                 Date_Watched TIMESTAMP DEFAULT NOW(),
@@ -69,7 +69,7 @@ def get_all_movies():
         cur.execute("""
             SELECT Movie_ID, Title, IMDB, Letterboxd, Rotten_Tomatoes,
                    Date_Released, Genre
-            FROM Movie
+            FROM Top_100_Movies
             ORDER BY CAST(IMDB AS FLOAT) DESC NULLS LAST;
         """)
         return cur.fetchall()
@@ -78,7 +78,7 @@ def get_all_movies():
 def get_movie_titles():
     """Return list of (Movie_ID, Title) tuples for dropdowns."""
     with get_cursor() as cur:
-        cur.execute("SELECT Movie_ID, Title FROM Movie ORDER BY Title;")
+        cur.execute("SELECT Movie_ID, Title FROM Top_100_Movies ORDER BY Title;")
         return cur.fetchall()
 
 
@@ -87,7 +87,7 @@ def get_movie_info(movie_id):
     with get_cursor() as cur:
         cur.execute("""
             SELECT Director, Actor1, Actor2, Actor3, Description
-            FROM Info WHERE Movie_ID = %s;
+            FROM Movie_Info WHERE Movie_ID = %s;
         """, (movie_id,))
         return cur.fetchone()
 
@@ -98,8 +98,8 @@ def get_all_user_reviews():
         cur.execute("""
             SELECT u.User_ID, m.Title, u.Name, u.Review,
                    u.Date_Watched, u.Rating
-            FROM Users u
-            JOIN Movie m ON u.Movie_ID = m.Movie_ID
+            FROM User_Info u
+            JOIN Top_100_Movies m ON u.Movie_ID = m.Movie_ID
             ORDER BY u.Date_Watched DESC;
         """)
         return cur.fetchall()
@@ -110,7 +110,7 @@ def get_user_reviews_for_movie(movie_id):
     with get_cursor() as cur:
         cur.execute("""
             SELECT User_ID, Name, Review, Date_Watched, Rating
-            FROM Users WHERE Movie_ID = %s
+            FROM User_Info WHERE Movie_ID = %s
             ORDER BY Date_Watched DESC;
         """, (movie_id,))
         return cur.fetchall()
@@ -121,7 +121,7 @@ def get_weighted_average(movie_id):
     with get_cursor() as cur:
         cur.execute("""
             SELECT AVG(CAST(Rating AS FLOAT))
-            FROM Users
+            FROM User_Info
             WHERE Movie_ID = %s
               AND Rating ~ '^[0-9]+(\\.[0-9]+)?$';
         """, (movie_id,))
@@ -133,7 +133,7 @@ def insert_review(movie_id, name, review, date_watched, rating):
     """Insert a new user review."""
     with get_cursor() as cur:
         cur.execute("""
-            INSERT INTO Users (Movie_ID, Name, Review, Date_Watched, Rating)
+            INSERT INTO User_Info (Movie_ID, Name, Review, Date_Watched, Rating)
             VALUES (%s, %s, %s, %s, %s);
         """, (movie_id, name, review, date_watched, rating))
 
@@ -142,7 +142,7 @@ def update_review(user_id, review, date_watched, rating):
     """Update an existing user review."""
     with get_cursor() as cur:
         cur.execute("""
-            UPDATE Users
+            UPDATE User_Info
             SET Review = %s, Date_Watched = %s, Rating = %s
             WHERE User_ID = %s;
         """, (review, date_watched, rating, user_id))
@@ -151,7 +151,7 @@ def update_review(user_id, review, date_watched, rating):
 def delete_review(user_id):
     """Delete a user review by ID."""
     with get_cursor() as cur:
-        cur.execute("DELETE FROM Users WHERE User_ID = %s;", (user_id,))
+        cur.execute("DELETE FROM User_Info WHERE User_ID = %s;", (user_id,))
 
 
 def get_review_by_id(user_id):
@@ -160,8 +160,8 @@ def get_review_by_id(user_id):
         cur.execute("""
             SELECT u.User_ID, m.Title, u.Name, u.Review,
                    u.Date_Watched, u.Rating
-            FROM Users u
-            JOIN Movie m ON u.Movie_ID = m.Movie_ID
+            FROM User_Info u
+            JOIN Top_100_Movies m ON u.Movie_ID = m.Movie_ID
             WHERE u.User_ID = %s;
         """, (user_id,))
         return cur.fetchone()
