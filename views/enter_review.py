@@ -1,8 +1,8 @@
 import streamlit as st
-
 from datetime import date
-
 import db
+
+
 def show():
     st.title("✍️ Enter a Review")
     st.markdown("Select a movie from the list and share your thoughts.")
@@ -20,19 +20,16 @@ def show():
     movie_map = {title: mid for mid, title in movie_options}
     movie_titles = list(movie_map.keys())
 
-    with st.form("enter_review_form", clear_on_submit=True):
+    with st.form("enter_review_form", clear_on_submit=False):
         st.markdown("### 📝 New Review")
-
         selected_title = st.selectbox("Movie *", movie_titles)
         name = st.text_input("Your Name *", max_chars=100)
         review = st.text_area("Review * (max 100 characters)", max_chars=100, height=100)
         rating_val = st.slider("Your Rating * (1–10)", min_value=1, max_value=10, value=7)
         date_watched = st.date_input("Date Watched *", value=date.today())
-
-        submitted = st.form_submit_button("Submit Review")
+        submitted = st.form_submit_button("Preview & Confirm")
 
     if submitted:
-        # Validation
         errors = []
         if not name.strip():
             errors.append("Name is required.")
@@ -47,15 +44,44 @@ def show():
             for err in errors:
                 st.error(err)
         else:
-            try:
-                movie_id = movie_map[selected_title]
-                db.insert_review(
-                    movie_id=movie_id,
-                    name=name.strip(),
-                    review=review.strip(),
-                    date_watched=date_watched,
-                    rating=str(rating_val)
-                )
-                st.success(f"✅ Review for **{selected_title}** submitted successfully!")
-            except Exception as e:
-                st.error(f"Failed to submit review: {e}")
+            # Store pending submission in session state
+            st.session_state["pending_review"] = {
+                "movie_id": movie_map[selected_title],
+                "title": selected_title,
+                "name": name.strip(),
+                "review": review.strip(),
+                "rating": rating_val,
+                "date_watched": date_watched,
+            }
+
+    # --- Confirmation step ---
+    if "pending_review" in st.session_state:
+        p = st.session_state["pending_review"]
+        st.markdown("---")
+        st.markdown("### ✅ Confirm Your Review")
+        st.markdown(f"**Movie:** {p['title']}")
+        st.markdown(f"**Name:** {p['name']}")
+        st.markdown(f"**Review:** {p['review']}")
+        st.markdown(f"**Rating:** {p['rating']}/10")
+        st.markdown(f"**Date Watched:** {p['date_watched']}")
+
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("✅ Yes, Submit", type="primary"):
+                try:
+                    db.insert_review(
+                        movie_id=p["movie_id"],
+                        name=p["name"],
+                        review=p["review"],
+                        date_watched=p["date_watched"],
+                        rating=str(p["rating"])
+                    )
+                    st.success(f"✅ Review for **{p['title']}** submitted successfully!")
+                    st.session_state.pop("pending_review", None)
+                except Exception as e:
+                    st.error(f"Failed to submit review: {e}")
+        with col2:
+            if st.button("❌ Cancel"):
+                st.session_state.pop("pending_review", None)
+                st.info("Submission cancelled.")
+                st.rerun()
