@@ -1,22 +1,22 @@
-# 🎬 Top 100 Movies Tracker — Streamlit App
+Top 100 Movies Reviewer
 
 A UI that helps the user enter their review of the top 100 movies of all time. A user can filter based on genre, user reviews, movies reviewed. They can edit their reviews and also delete them based of review ID.
 
-## Pages
+Pages
 
-| Page | Description |
-|------|-------------|
-| 🏠 Home | Browse movies sorted by IMDb, Letterboxd, or weighted user average. Click any movie to see director, cast, description, and user reviews. |
-| ⭐ User Ratings | View all reviews with filters by movie and reviewer. |
-| ✍️ Enter Review | Pick a movie from the dropdown and submit a review (name, text, rating 1–10, date). |
-| ✏️ Update Review | Look up a review by ID and edit it. |
-| 🗑️ Delete Review | Look up a review by ID and delete it after confirmation. |
+Home Page: Sort between the highest rated IMBD 100 movies by average IMBD rating, average Letterboxd, and average weighted user rating. also filter by genre
 
----
+User Ratings: Browse between user ratings. Sortable by user and movie.
 
-## Validation Rules
+Enter Review: Users can enter a review of one of the top 100 rated movies.
 
-- All fields are required when entering or updating a review.
-- The movie must already exist in the database (selected via dropdown).
-- Review text must be 100 characters or fewer.
-- Rating must be between 1 and 10.
+Update Review: users can update their reviews with a confirmation beforehand.
+
+Delete Review: Users can delete their review with a confirmation beforehand.
+
+URL
+
+https://movietracker-lwwtzcunzhgvxsywkebq4u.streamlit.app/ 
+
+ERD<img width="814" height="411" alt="Screenshot 2026-04-09 at 9 07 38 PM" src="https://github.com/user-attachments/assets/7968b07c-3dc5-4f83-8c84-39034b4f320f" />
+
