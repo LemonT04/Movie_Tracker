@@ -1,12 +1,6 @@
 # 🎬 Top 100 Movies Tracker — Streamlit App
 
-A multi-page Streamlit application connected to a PostgreSQL database for tracking and reviewing the top 100 movies of all time.
-
----
-
-## Project Structure
-
-```
+A UI that helps the user enter their review of the top 100 movies of all time. A user can filter based on genre, user reviews, movies reviewed. They can edit their reviews and also delete them based of review ID.
 movie_tracker/
 ├── app.py                    # Main entry point & navigation
 ├── db.py                     # All database logic (psycopg2)
@@ -20,39 +14,6 @@ movie_tracker/
     ├── enter_review.py       # Submit a new review
     ├── update_review.py      # Edit an existing review by ID
     └── delete_review.py      # Delete a review with confirmation
-```
-
----
-
-## Setup Instructions
-
-### 1. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 2. Configure Database Connection
-Copy the example secrets file and fill in your PostgreSQL connection string:
-```bash
-cp .streamlit/secrets.toml.example .streamlit/secrets.toml
-```
-Edit `.streamlit/secrets.toml`:
-```toml
-DB_URL = "postgresql://username:password@host:5432/your_database"
-```
-
-### 3. Create Tables & Seed Data
-Run `setup.sql` against your PostgreSQL database:
-```bash
-psql $DATABASE_URL -f setup.sql
-```
-
-### 4. Run the App
-```bash
-streamlit run app.py
-```
-
----
 
 ## Pages
 
