@@ -18,5 +18,7 @@ URL
 
 https://movietracker-lwwtzcunzhgvxsywkebq4u.streamlit.app/ 
 
-ERD<img width="814" height="411" alt="Screenshot 2026-04-09 at 9 07 38 PM" src="https://github.com/user-attachments/assets/7968b07c-3dc5-4f83-8c84-39034b4f320f" />
+ERD
+
+<img width="814" height="411" alt="Screenshot 2026-04-09 at 9 07 38 PM" src="https://github.com/user-attachments/assets/7968b07c-3dc5-4f83-8c84-39034b4f320f" />
 
