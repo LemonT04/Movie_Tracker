@@ -10,7 +10,7 @@ User Ratings: Browse between user ratings. Sortable by user and movie.
 
 Enter Review: Users can enter a review of one of the top 100 rated movies.
 
-Update Review: users can update their reviews with a confirmation beforehand.
+Update Review: Users can update their reviews with a confirmation beforehand.
 
 Delete Review: Users can delete their review with a confirmation beforehand.
 
