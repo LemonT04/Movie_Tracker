@@ -1,8 +1,8 @@
 import streamlit as st
-
 from datetime import date
-
 import db
+
+
 def show():
     st.title("✏️ Update a Review")
     st.markdown("Enter your Review ID to load and edit your existing review.")
@@ -41,8 +41,7 @@ def show():
             )
             current_date = date_watched.date() if date_watched else date.today()
             new_date = st.date_input("Date Watched *", value=current_date)
-
-            update_btn = st.form_submit_button("Update Review")
+            update_btn = st.form_submit_button("Preview & Confirm")
 
         if update_btn:
             errors = []
@@ -57,14 +56,43 @@ def show():
                 for err in errors:
                     st.error(err)
             else:
+                st.session_state["pending_update"] = {
+                    "user_id": user_id,
+                    "title": title,
+                    "name": name,
+                    "review": new_review.strip(),
+                    "rating": new_rating,
+                    "date_watched": new_date,
+                }
+
+    # --- Confirmation step ---
+    if "pending_update" in st.session_state:
+        p = st.session_state["pending_update"]
+        st.markdown("---")
+        st.markdown("### ✅ Confirm Your Update")
+        st.markdown(f"**Movie:** {p['title']}")
+        st.markdown(f"**Name:** {p['name']}")
+        st.markdown(f"**Updated Review:** {p['review']}")
+        st.markdown(f"**Updated Rating:** {p['rating']}/10")
+        st.markdown(f"**Updated Date Watched:** {p['date_watched']}")
+
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("✅ Yes, Update", type="primary"):
                 try:
                     db.update_review(
-                        user_id=user_id,
-                        review=new_review.strip(),
-                        date_watched=new_date,
-                        rating=str(new_rating)
+                        user_id=p["user_id"],
+                        review=p["review"],
+                        date_watched=p["date_watched"],
+                        rating=str(p["rating"])
                     )
                     st.success("✅ Review updated successfully!")
+                    st.session_state.pop("pending_update", None)
                     st.session_state.pop("edit_review", None)
                 except Exception as e:
                     st.error(f"Failed to update review: {e}")
+        with col2:
+            if st.button("❌ Cancel"):
+                st.session_state.pop("pending_update", None)
+                st.info("Update cancelled.")
+                st.rerun()
