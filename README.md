@@ -4,7 +4,7 @@ A UI that helps the user enter their review of the top 100 movies of all time. A
 
 Pages
 
-Home Page: Sort between the highest rated IMBD 100 movies by average IMBD rating, average Letterboxd, and average weighted user rating. also filter by genre
+Home Page: Sort between the highest rated IMBD 100 movies by average IMBD rating, average Letterboxd, and average weighted user rating. also filter by genre.
 
 User Ratings: Browse between user ratings. Sortable by user and movie.
 
