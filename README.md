@@ -1,19 +1,6 @@
 # 🎬 Top 100 Movies Tracker — Streamlit App
 
 A UI that helps the user enter their review of the top 100 movies of all time. A user can filter based on genre, user reviews, movies reviewed. They can edit their reviews and also delete them based of review ID.
-movie_tracker/
-├── app.py                    # Main entry point & navigation
-├── db.py                     # All database logic (psycopg2)
-├── requirements.txt
-├── setup.sql                 # Run once to create tables & seed data
-├── .streamlit/
-│   └── secrets.toml.example  # Copy to secrets.toml and fill in your DB_URL
-└── pages/
-    ├── home.py               # Home page — movie list + ratings + info
-    ├── user_ratings.py       # All user reviews with filters
-    ├── enter_review.py       # Submit a new review
-    ├── update_review.py      # Edit an existing review by ID
-    └── delete_review.py      # Delete a review with confirmation
 
 ## Pages
 
